@@ -8,13 +8,20 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-export default defineConfig((config) => {
+// Railway production hostname(s) allowed during development
+const ALLOWED_HOSTS = ['boltdiy-production-b12b.up.railway.app'];
+
+export default defineConfig((config: any) => {
   return {
     define: {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     },
     build: {
       target: 'esnext',
+    },
+    server: {
+      // Allow Railway production host so Vite dev server won't block requests
+      allowedHosts: ALLOWED_HOSTS,
     },
     plugins: [
       nodePolyfills({
@@ -29,7 +36,7 @@ export default defineConfig((config) => {
       }),
       {
         name: 'buffer-polyfill',
-        transform(code, id) {
+  transform(code: string, id: string) {
           if (id.includes('env.mjs')) {
             return {
               code: `import { Buffer } from 'buffer';\n${code}`,
@@ -75,8 +82,8 @@ function chrome129IssuePlugin() {
   return {
     name: 'chrome129IssuePlugin',
     configureServer(server: ViteDevServer) {
-      server.middlewares.use((req, res, next) => {
-        const raw = req.headers['user-agent']?.match(/Chrom(e|ium)\/([0-9]+)\./);
+      server.middlewares.use((req: any, res: any, next: any) => {
+        const raw = (req.headers['user-agent'] as string | undefined)?.match(/Chrom(e|ium)\/([0-9]+)\./);
 
         if (raw) {
           const version = parseInt(raw[2], 10);
