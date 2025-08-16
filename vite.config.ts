@@ -9,7 +9,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 // Railway production hostname(s) allowed during development
-const ALLOWED_HOSTS = ['boltdiy-production-b12b.up.railway.app'];
+const ALLOWED_HOSTS = ['bolt.stylesoftware.co.nz'];
 
 export default defineConfig((config: any) => {
   return {
